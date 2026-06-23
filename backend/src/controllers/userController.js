@@ -1,15 +1,13 @@
 import { STATUS_CODES } from "../constants/statusCodes.js";
 import { createUser, updateUserById } from "../services/userServices.js";
+import { ApiError } from "../utils/ApiError.js";
 
-const createOrUpdateUser = async (req, res) => {
+const createOrUpdateUser = async (req, res, next) => {
   try {
     const { userData } = req.body;
 
     if (!userData) {
-      return res.status(STATUS_CODES.BAD_REQUEST).json({
-        success: false,
-        message: "User data is required",
-      });
+      throw new ApiError(STATUS_CODES.BAD_REQUEST, "User data is required");
     }
 
     const errors = [];
@@ -27,9 +25,11 @@ const createOrUpdateUser = async (req, res) => {
     }
 
     if (errors.length > 0) {
-      return res
-        .status(STATUS_CODES.BAD_REQUEST)
-        .json({ success: false, errors });
+      throw new ApiError(
+        STATUS_CODES.BAD_REQUEST,
+        "Validation failed",
+        errors
+      );
     }
 
     let user;
@@ -46,17 +46,16 @@ const createOrUpdateUser = async (req, res) => {
     });
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(STATUS_CODES.BAD_REQUEST).json({
-        success: false,
-        message: "user with this email already exits",
-      });
+      return next(
+        new ApiError(
+          STATUS_CODES.BAD_REQUEST,
+          "User with this email already exists"
+        )
+      );
     }
-
-    return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
 
 export { createOrUpdateUser };
+
