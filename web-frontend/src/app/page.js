@@ -1,7 +1,48 @@
-import { MessageCircle, ShieldCheck, Zap } from "lucide-react";
+'use client'
+import { MessageCircle, ShieldCheck, Zap, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { login } from "@/services/auth.service";
+import { toast } from "sonner";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!email.trim() || !password.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await login(email.trim(), password);
+      
+      if (res.success && res.data) {
+        toast.success("Login successful!");
+        // Save the authentication token and user profile in localStorage
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        
+        // Redirect to the chats dashboard
+        router.push("/chats");
+      } else {
+        toast.error("Invalid response from server");
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to login. Please check your credentials.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="h-screen grid grid-cols-2">
       {/* Left Section */}
@@ -45,7 +86,9 @@ const LoginPage = () => {
             Login to continue your conversation.
           </p>
 
-          <form className="mt-10 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -54,7 +97,10 @@ const LoginPage = () => {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:bg-gray-100"
               />
             </div>
 
@@ -63,18 +109,31 @@ const LoginPage = () => {
                 Password
               </label>
 
-              <input
-                type="password"
-                placeholder="Enter your password"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  className="w-full border border-gray-300 rounded-lg pl-4 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:bg-gray-100"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-lg font-medium transition duration-200 cursor-pointer"
+              disabled={loading}
+              className="w-full bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-lg font-medium transition duration-200 cursor-pointer disabled:bg-sky-400 disabled:cursor-not-allowed flex justify-center items-center"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
 
             <p className="text-center text-gray-500">
