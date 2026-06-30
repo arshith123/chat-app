@@ -12,16 +12,25 @@ const createOrUpdateUser = async (req, res, next) => {
 
     const errors = [];
 
-    if (!userData.name?.trim()) {
-      errors.push("Name is required");
-    }
-
-    if (!userData.email?.trim()) {
-      errors.push("Email is required");
-    }
-
-    if (!userData._id && !userData.password?.trim()) {
-      errors.push("Password is required");
+    if (!userData._id) {
+      // Creation: Name, Email, and Password are all required
+      if (!userData.name?.trim()) {
+        errors.push("Name is required");
+      }
+      if (!userData.email?.trim()) {
+        errors.push("Email is required");
+      }
+      if (!userData.password?.trim()) {
+        errors.push("Password is required");
+      }
+    } else {
+      // Update: If fields are passed, they must not be empty
+      if (userData.hasOwnProperty("name") && !userData.name?.trim()) {
+        errors.push("Name cannot be empty");
+      }
+      if (userData.hasOwnProperty("email") && !userData.email?.trim()) {
+        errors.push("Email cannot be empty");
+      }
     }
 
     if (errors.length > 0) {

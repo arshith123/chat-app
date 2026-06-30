@@ -16,13 +16,15 @@ const createUser = async (userData) => {
 const updateUserById = async (userData) => {
   const _id = userData._id;
 
-  const existingUser = await User.findOne({
-    email: userData.email,
-    _id: { $ne: _id },
-  });
+  if (userData.email) {
+    const existingUser = await User.findOne({
+      email: userData.email,
+      _id: { $ne: _id },
+    });
 
-  if (existingUser) {
-    throw new Error("user with this email already exists");
+    if (existingUser) {
+      throw new Error("user with this email already exists");
+    }
   }
 
   const updatedUser = await User.findByIdAndUpdate(_id, userData, {

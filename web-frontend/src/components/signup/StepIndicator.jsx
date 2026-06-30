@@ -1,14 +1,11 @@
 const StepIndicator = ({ currentStep }) => {
   const labels = {
     1: "Basic Details",
-    2: "Profile Setup",
-    3: "Success",
+    2: "Success",
+    3: "Profile Setup",
   };
 
-  const percentage = (currentStep / 3) * 100
-
-  console.log("percentage",percentage);
-  
+  const percentage = (currentStep / 3) * 100;
 
   return (
     <div className="w-full max-w-lg">
@@ -21,7 +18,7 @@ const StepIndicator = ({ currentStep }) => {
           {labels[currentStep]}
         </span>
       </div>
-       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
         <div
           className="h-full bg-sky-600 transition-all duration-300"
           style={{ width: `${percentage}%` }}

@@ -1,6 +1,7 @@
+import React from "react";
 import { CheckCircle2 } from "lucide-react";
 
-const StepSuccess = () => {
+const StepSuccess = ({ onNext }) => {
   return (
     <div className="w-full max-w-lg mx-auto text-center">
       <div className="flex justify-center mb-6">
@@ -14,12 +15,15 @@ const StepSuccess = () => {
       </h2>
 
       <p className="text-gray-500 mb-8">
-        Your account has been successfully created. You can now sign in and
-        start chatting with friends.
+        Your account has been successfully created. Let us finish setting up your
+        profile information.
       </p>
 
-      <button className="w-full bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-lg font-medium transition-colors">
-        Go to Login
+      <button
+        onClick={onNext}
+        className="w-full bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-lg font-medium transition-colors cursor-pointer"
+      >
+        Set Up Profile
       </button>
     </div>
   );
