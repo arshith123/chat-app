@@ -36,8 +36,31 @@ const updateUserById = async (userData) => {
   return updatedUser;
 };
 
-const getUserById = async (_id) => {
-  const user = await User.findById(_id).select("-password");
+const getUserById = async (_id, selectFields) => {
+  let query = User.findById(_id);
+
+  if (selectFields) {
+    let projection = selectFields;
+
+    if (typeof selectFields === "string") {
+      try {
+        // Attempt to parse JSON string (e.g. '{"name":1}' or '["name"]')
+        projection = JSON.parse(selectFields);
+      } catch (err) {
+        // Fallback to standard string (convert comma-separated to space-separated)
+        projection = selectFields.replace(/,/g, " ");
+      }
+    }
+
+    if (Array.isArray(projection)) {
+      projection = projection.join(" ");
+    }
+    query = query.select(projection);
+  } else {
+    query = query.select("-password");
+  }
+
+  const user = await query;
 
   if (!user) {
     throw new Error("User not found");

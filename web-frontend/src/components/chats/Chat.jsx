@@ -77,7 +77,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex-1 h-screen flex flex-col bg-white">
+    <div className="flex-1 h-full flex flex-col bg-white">
       {/* Chat Header */}
       <div className="h-20 px-6 border-b border-slate-100 flex items-center justify-between bg-white">
         <div className="flex items-center gap-3">
@@ -100,13 +100,6 @@ const Chat = () => {
 
         {/* Action icons */}
         <div className="flex items-center gap-3">
-          <button className="p-2 hover:bg-slate-50 rounded-full text-slate-500 hover:text-slate-800 transition-colors cursor-pointer">
-            <Phone size={20} />
-          </button>
-          <button className="p-2 hover:bg-slate-50 rounded-full text-slate-500 hover:text-slate-800 transition-colors cursor-pointer">
-            <Video size={20} />
-          </button>
-          <div className="h-6 w-[1px] bg-slate-200 mx-1" />
           <button className="p-2 hover:bg-slate-50 rounded-full text-slate-500 hover:text-slate-800 transition-colors cursor-pointer">
             <Search size={20} />
           </button>

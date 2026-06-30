@@ -7,3 +7,10 @@ export const register = async (userData) => {
     body: { userData },
   });
 };
+
+export const login = async (email, password) => {
+  return await apiRequest(API_ENDPOINTS.LOGIN, {
+    method: "POST",
+    body: { email, password },
+  });
+};

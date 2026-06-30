@@ -1,6 +1,7 @@
 import { STATUS_CODES } from "../constants/statusCodes.js";
 import { loginUser } from "../services/auth.service.js";
 import { ApiError } from "../utils/ApiError.js";
+import logger from "../config/logger.js";
 
 /**
  * Controller to handle POST request for User Login
@@ -21,8 +22,11 @@ const login = async (req, res, next) => {
       data: { user, token },
     });
   } catch (error) {
-    if (error.message === "Invalid email or password") {
-      return next(new ApiError(STATUS_CODES.UNAUTHORIZED, "Invalid email or password"));
+    if (
+      error.message === "Invalid email or password" ||
+      error.message === "No user found on this Email"
+    ) {
+      return next(new ApiError(STATUS_CODES.UNAUTHORIZED, error.message));
     }
     next(error);
   }

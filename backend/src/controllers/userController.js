@@ -1,5 +1,5 @@
 import { STATUS_CODES } from "../constants/statusCodes.js";
-import { createUser, updateUserById, getUserById, loginUser } from "../services/userServices.js";
+import { createUser, updateUserById, getUserById } from "../services/userServices.js";
 import { ApiError } from "../utils/ApiError.js";
 
 const createOrUpdateUser = async (req, res, next) => {
@@ -70,12 +70,13 @@ const createOrUpdateUser = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { select } = req.query;
 
     if (!id) {
       throw new ApiError(STATUS_CODES.BAD_REQUEST, "User ID is required");
     }
 
-    const user = await getUserById(id);
+    const user = await getUserById(id, select);
 
     return res.status(STATUS_CODES.OK).json({
       success: true,
@@ -92,30 +93,7 @@ const getUser = async (req, res, next) => {
   }
 };
 
-const login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      throw new ApiError(STATUS_CODES.BAD_REQUEST, "Email and password are required");
-    }
-
-    const { user, token } = await loginUser(email, password);
-
-    return res.status(STATUS_CODES.OK).json({
-      success: true,
-      message: "Login successful",
-      data: { user, token },
-    });
-  } catch (error) {
-    if (error.message === "Invalid email or password") {
-      return next(new ApiError(STATUS_CODES.UNAUTHORIZED, "Invalid email or password"));
-    }
-    next(error);
-  }
-};
-
-export { createOrUpdateUser, getUser, login };
+export { createOrUpdateUser, getUser };
 
 
 

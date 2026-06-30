@@ -12,7 +12,7 @@ const loginUser = async (email, password) => {
   // Find the user and explicitly select the password field
   const user = await User.findOne({ email });
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new Error("No user found on this Email");
   }
 
   // Compare passwords using the schema method defined in User.js

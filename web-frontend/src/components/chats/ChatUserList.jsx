@@ -53,7 +53,7 @@ const ChatUserList = () => {
   );
 
   return (
-    <div className="w-120 h-screen bg-slate-50 border-r border-slate-200 flex flex-col">
+    <div className="w-120 h-full bg-slate-50 border-r border-slate-200 flex flex-col">
       {/* Header section */}
       <div className="p-5 bg-white border-b border-slate-100">
         <div className="flex items-center justify-between mb-4">
