@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import app from "./src/app.js"
 import connectDb from "./src/config/db.js";
+import logger from "./src/config/logger.js";
 
 dotenv.config();
 
@@ -14,5 +15,5 @@ app.get("/",(req,res) =>{
 })
 
 app.listen(PORT,() => {
-    console.log(`server running on port http://localhost:${PORT}`);
+    logger.info(`Server running on port http://localhost:${PORT}`);
 })
